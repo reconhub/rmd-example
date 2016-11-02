@@ -17,111 +17,48 @@ In the following, we use a simulated Ebola outbreak linelist to illustrate how t
 
 We first load the data:
 
-
-```r
+```{r}
 library(outbreaks)
 dat <- ebola.sim$linelist
 ```
 
 We compute the incubation period and ensure that the result is `numeric`:
-
-```r
+```{r, incub}
 incub <- dat$date.of.onset - dat$date.of.infection
 head(incub)
-```
-
-```
-## Time differences in days
-## [1] NA  6  3 NA  4 37
-```
-
-```r
 length(incub)
-```
-
-```
-## [1] 5888
-```
-
-```r
 summary(incub)
-```
-
-```
-##   Length    Class     Mode 
-##     5888 difftime  numeric
-```
-
-```r
 incub <- as.numeric(incub)
 summary(incub)
 ```
 
-```
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-##   0.000   4.000   8.000   9.921  14.000  62.000    2087
-```
-
 We remove the missing values, compute the mean and variance:
-
-```r
+```{r, removeNA}
 sum(is.na(incub))
-```
-
-```
-## [1] 2087
-```
-
-```r
 incub <- incub[!is.na(incub)]
 mean(incub)
-```
-
-```
-## [1] 9.921336
-```
-
-```r
 var(incub)
 ```
 
-```
-## [1] 59.89197
-```
-
 Get the 95 percentile:
-
-```r
+```{r, perc}
 t <- quantile(incub, .95)
 t
 ```
 
-```
-## 95% 
-##  25
-```
-
-Quarantine should last for at least **25 days**.
+Quarantine should last for at least **`r t` days**.
 
 Plot using basic graphics:
-
-```r
+```{r, plot}
 hist(incub, col="grey", border="white", xlab = "Days to show symptoms", main = "Distribution of incubation period")
 abline(v = t, col = "red", lty = 2)
 ```
 
-![plot of chunk plot](figure/plot-1.png)
-
 Version using *ggplot2*:
 
-
-```r
+```{r, ggplot}
 ggplot(data.frame(incubation = incub), aes(x=incub)) + 
   geom_histogram() +
   labs("Days to show symptoms", main = "Distribution of incubation period")
-```
-
-```
-## Error in eval(expr, envir, enclos): could not find function "ggplot"
 ```
 
